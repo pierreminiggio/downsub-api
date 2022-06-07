@@ -1,0 +1,30 @@
+{
+    "name": "@pierreminiggio/downsub-api",
+    "version": "1.0.0",
+    "description": "Downsub API",
+    "main": "dist/DownsubAPI.js",
+    "scripts": {
+        "build": "tsc -d",
+        "cli": "tsc -d && node dist/cli.js",
+        "test": "tsc -d && node dist/test.js"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/pierreminiggio/downsub-api.git"
+    },
+    "author": "Pierre Miniggio",
+    "license": "ISC",
+    "bugs": {
+        "url": "https://github.com/pierreminiggio/downsub-api/issues"
+    },
+    "homepage": "https://github.com/pierreminiggio/downsub-api#readme",
+    "devDependencies": {
+        "@types/node-fetch": "^2.6.1",
+        "node-fetch": "^2.6.1",
+        "typescript": "^4.3.5"
+    },
+    "dependencies": {
+        "@types/puppeteer": "^5.4.6",
+        "puppeteer": "^14.1.1"
+    }
+}
