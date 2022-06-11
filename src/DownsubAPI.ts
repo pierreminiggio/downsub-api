@@ -36,25 +36,40 @@ export default class DownsubAPI {
 
             await page.goto('https://downsub.com/?url=' + videoLink)
 
-            const lineSelector = '.layout.justify-start'
+            const lineClasseNames = ['layout', 'justify-start']
+            const lineSelector = '.' + lineClasseNames.join('.')
             const firstLineSelector = lineSelector + ':first-child'
 
-            await page.waitForSelector(firstLineSelector)
-            const languagesLinesSelector = firstLineSelector + ', ' + firstLineSelector + '+' + lineSelector
+            await page.waitForSelector('#ds-qc-info')
 
             const languages: Language[] = await page.evaluate(
-                languagesLinesSelector => {
-                    const elements = Array.from(document.querySelectorAll(languagesLinesSelector))
-                    const subtitles = []
-                    for (const element of elements) {
-                        subtitles.push({
-                            name: element.querySelector('.text-left').innerText.trim()
-                        })
-                    }
+                (firstLineSelector, lineClasseNames) => {
+                    let element = document.querySelector(firstLineSelector)
 
-                    return subtitles
+                    const languages: Language[] = []
+
+                    while (true) {
+                        const name = element.querySelector('.text-left')?.innerText.trim()
+
+                        if (! name) {
+                           continue
+                        }
+
+                        languages.push({name})
+
+                        const nextElement = element.nextElementSibling
+
+                        for (const lineClasseName of lineClasseNames) {
+                            if (! nextElement.classList.contains(lineClasseName)) {
+                                return languages
+                            }
+                        }
+
+                        element = nextElement
+                    }
                 },
-                languagesLinesSelector
+                firstLineSelector,
+                lineClasseNames
             )
 
             const subtitles: Subtitle[] = []
@@ -96,14 +111,32 @@ export default class DownsubAPI {
                 await page.client().send('Page.setDownloadBehavior', {behavior: 'allow', downloadPath: './'})
     
                 await page.evaluate(
-                    async languagesLinesSelector => {
-                        const elements = Array.from(document.querySelectorAll(languagesLinesSelector))
-                        for (const element of elements) {
+                    async (firstLineSelector, lineClasseNames) => {
+                        let element = document.querySelector(firstLineSelector)
+    
+                        while (true) {
+                            const name = element.querySelector('.text-left')?.innerText.trim()
+    
+                            if (! name) {
+                               continue
+                            }
+    
                             element.querySelector('button').click()
                             await new Promise(resolve => setTimeout(resolve, 2000))
+    
+                            const nextElement = element.nextElementSibling
+    
+                            for (const lineClasseName of lineClasseNames) {
+                                if (! nextElement.classList.contains(lineClasseName)) {
+                                    return
+                                }
+                            }
+    
+                            element = nextElement
                         }
                     },
-                    languagesLinesSelector
+                    firstLineSelector,
+                    lineClasseNames
                 )
 
                 await page.waitForTimeout(5000)

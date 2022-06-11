@@ -22,20 +22,29 @@ class DownsubAPI {
             const pages = await browser.pages();
             const page = pages.length > 0 ? pages[0] : await browser.newPage();
             await page.goto('https://downsub.com/?url=' + videoLink);
-            const lineSelector = '.layout.justify-start';
+            const lineClasseNames = ['layout', 'justify-start'];
+            const lineSelector = '.' + lineClasseNames.join('.');
             const firstLineSelector = lineSelector + ':first-child';
-            await page.waitForSelector(firstLineSelector);
-            const languagesLinesSelector = firstLineSelector + ', ' + firstLineSelector + '+' + lineSelector;
-            const languages = await page.evaluate(languagesLinesSelector => {
-                const elements = Array.from(document.querySelectorAll(languagesLinesSelector));
-                const subtitles = [];
-                for (const element of elements) {
-                    subtitles.push({
-                        name: element.querySelector('.text-left').innerText.trim()
-                    });
+            await page.waitForSelector('#ds-qc-info');
+            const languages = await page.evaluate((firstLineSelector, lineClasseNames) => {
+                var _a;
+                let element = document.querySelector(firstLineSelector);
+                const languages = [];
+                while (true) {
+                    const name = (_a = element.querySelector('.text-left')) === null || _a === void 0 ? void 0 : _a.innerText.trim();
+                    if (!name) {
+                        continue;
+                    }
+                    languages.push({ name });
+                    const nextElement = element.nextElementSibling;
+                    for (const lineClasseName of lineClasseNames) {
+                        if (!nextElement.classList.contains(lineClasseName)) {
+                            return languages;
+                        }
+                    }
+                    element = nextElement;
                 }
-                return subtitles;
-            }, languagesLinesSelector);
+            }, firstLineSelector, lineClasseNames);
             const subtitles = [];
             await new Promise(async (resolve) => {
                 const responseHandler = async (response) => {
@@ -62,13 +71,25 @@ class DownsubAPI {
                 };
                 page.on('response', responseHandler);
                 await page.client().send('Page.setDownloadBehavior', { behavior: 'allow', downloadPath: './' });
-                await page.evaluate(async (languagesLinesSelector) => {
-                    const elements = Array.from(document.querySelectorAll(languagesLinesSelector));
-                    for (const element of elements) {
+                await page.evaluate(async (firstLineSelector, lineClasseNames) => {
+                    var _a;
+                    let element = document.querySelector(firstLineSelector);
+                    while (true) {
+                        const name = (_a = element.querySelector('.text-left')) === null || _a === void 0 ? void 0 : _a.innerText.trim();
+                        if (!name) {
+                            continue;
+                        }
                         element.querySelector('button').click();
                         await new Promise(resolve => setTimeout(resolve, 2000));
+                        const nextElement = element.nextElementSibling;
+                        for (const lineClasseName of lineClasseNames) {
+                            if (!nextElement.classList.contains(lineClasseName)) {
+                                return;
+                            }
+                        }
+                        element = nextElement;
                     }
-                }, languagesLinesSelector);
+                }, firstLineSelector, lineClasseNames);
                 await page.waitForTimeout(5000);
                 resolve(undefined);
             });
