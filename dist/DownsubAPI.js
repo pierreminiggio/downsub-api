@@ -53,7 +53,12 @@ class DownsubAPI {
                 }
             }, firstLineSelector, lineClasseNames);
             if (!languages) {
+<<<<<<< HEAD
                 throw new Error('No language. HTML : ' + await page.evaluate(() => document.head.outerHTML + document.body.outerHTML));
+=======
+                console.log(await page.evaluate(() => document.head.outerHTML + document.body.outerHTML));
+                throw new Error('No language');
+>>>>>>> 7d6baded7ef2fe36a89c43759a17d328d9d273f4
             }
             const subtitles = [];
             await new Promise(async (resolve) => {
