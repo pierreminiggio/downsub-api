@@ -49,6 +49,11 @@ export default class DownsubAPI {
                     const languages: Language[] = []
 
                     while (true) {
+
+                        if (! element) {
+                            return languages
+                        }
+
                         const name = element.querySelector('.text-left')?.innerText.trim()
 
                         if (! name) {
@@ -115,6 +120,11 @@ export default class DownsubAPI {
                         let element = document.querySelector(firstLineSelector)
     
                         while (true) {
+
+                            if (! element) {
+                                return languages
+                            }
+                            
                             const name = element.querySelector('.text-left')?.innerText.trim()
     
                             if (! name) {
