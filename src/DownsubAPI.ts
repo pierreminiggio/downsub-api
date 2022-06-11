@@ -78,6 +78,7 @@ export default class DownsubAPI {
                 firstLineSelector,
                 lineClasseNames
             )
+            console.log(languages)
 
             const subtitles: Subtitle[] = []
 
