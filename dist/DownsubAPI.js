@@ -30,6 +30,9 @@ class DownsubAPI {
             const languages = await page.evaluate((firstLineSelector, lineClasseNames) => {
                 var _a;
                 let element = document.querySelector(firstLineSelector);
+                if (!element) {
+                    return null;
+                }
                 const languages = [];
                 while (true) {
                     if (!element) {
@@ -49,6 +52,10 @@ class DownsubAPI {
                     element = nextElement;
                 }
             }, firstLineSelector, lineClasseNames);
+            if (!languages) {
+                console.log(await page.evaluate(() => document.head.outerHTML + document.body.outerHTML));
+                throw new Error('No language');
+            }
             const subtitles = [];
             await new Promise(async (resolve) => {
                 const responseHandler = async (response) => {

@@ -44,9 +44,13 @@ export default class DownsubAPI {
 
             await page.waitForSelector('#ds-qc-info')
 
-            const languages: Language[] = await page.evaluate(
+            const languages: Language[]|null = await page.evaluate(
                 (firstLineSelector, lineClasseNames) => {
                     let element = document.querySelector(firstLineSelector)
+
+                    if (! element) {
+                        return null
+                    }
 
                     const languages: Language[] = []
 
@@ -78,6 +82,11 @@ export default class DownsubAPI {
                 firstLineSelector,
                 lineClasseNames
             )
+
+            if (! languages) {
+                console.log(await page.evaluate(() => document.head.outerHTML + document.body.outerHTML))
+                throw new Error('No language')
+            }
 
             const subtitles: Subtitle[] = []
 
