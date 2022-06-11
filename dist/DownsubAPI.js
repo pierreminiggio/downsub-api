@@ -49,7 +49,6 @@ class DownsubAPI {
                     element = nextElement;
                 }
             }, firstLineSelector, lineClasseNames);
-            console.log(languages);
             const subtitles = [];
             await new Promise(async (resolve) => {
                 const responseHandler = async (response) => {
