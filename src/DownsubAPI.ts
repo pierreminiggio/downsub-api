@@ -42,6 +42,7 @@ export default class DownsubAPI {
             const lineSelector = '.' + lineClasseNames.join('.')
             const firstLineSelector = lineSelector + ':first-child'
 
+            await page.waitForSelector(firstLineSelector)
             await page.waitForSelector('#ds-qc-info')
 
             const languages: Language[]|null = await page.evaluate(

@@ -26,6 +26,7 @@ class DownsubAPI {
             const lineClasseNames = ['layout', 'justify-start'];
             const lineSelector = '.' + lineClasseNames.join('.');
             const firstLineSelector = lineSelector + ':first-child';
+            await page.waitForSelector(firstLineSelector);
             await page.waitForSelector('#ds-qc-info');
             const languages = await page.evaluate((firstLineSelector, lineClasseNames) => {
                 var _a;
