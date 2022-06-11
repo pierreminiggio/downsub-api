@@ -21,6 +21,7 @@ class DownsubAPI {
         try {
             const pages = await browser.pages();
             const page = pages.length > 0 ? pages[0] : await browser.newPage();
+            await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/101.0.4951.67 Safari/537.36 OPR/87.0.4390.45');
             await page.goto('https://downsub.com/?url=' + videoLink);
             const lineClasseNames = ['layout', 'justify-start'];
             const lineSelector = '.' + lineClasseNames.join('.');
