@@ -122,9 +122,9 @@ export default class DownsubAPI {
                         while (true) {
 
                             if (! element) {
-                                return languages
+                                return
                             }
-                            
+
                             const name = element.querySelector('.text-left')?.innerText.trim()
     
                             if (! name) {

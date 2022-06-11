@@ -79,7 +79,7 @@ class DownsubAPI {
                     let element = document.querySelector(firstLineSelector);
                     while (true) {
                         if (!element) {
-                            return languages;
+                            return;
                         }
                         const name = (_a = element.querySelector('.text-left')) === null || _a === void 0 ? void 0 : _a.innerText.trim();
                         if (!name) {
