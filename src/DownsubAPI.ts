@@ -84,8 +84,7 @@ export default class DownsubAPI {
             )
 
             if (! languages) {
-                console.log(await page.evaluate(() => document.head.outerHTML + document.body.outerHTML))
-                throw new Error('No language')
+                throw new Error('No language. HTML : ' + await page.evaluate(() => document.head.outerHTML + document.body.outerHTML))
             }
 
             const subtitles: Subtitle[] = []
