@@ -19,7 +19,7 @@ jobs:
       - run: node dist/cli.js $link > subs.json
         env:
           link: ${{ github.event.inputs.link }}
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v3
         with:
           name: subs.json
           path: subs.json
